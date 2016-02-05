@@ -56,6 +56,13 @@ SKIP: {
 
 my $obj = Sereal::Dclone::Clonetest->new;
 $obj->foo('test string');
+ok +(eval { $cloned = dclone $obj; 1 }), 'cloned object' or diag $@;
+isnt 0+$obj, 0+$cloned, 'different refaddrs';
+isa_ok $cloned, 'Sereal::Dclone::Clonetest', 'cloned object';
+is $cloned->foo, $obj->foo, 'cloned attribute set';
+$cloned->foo('different string');
+isnt $cloned->foo, $obj->foo, 'separate objects';
+
 $ref = {foo => $obj};
 ok +(eval { $cloned = dclone $ref; 1 }), 'cloned structure with object' or diag $@;
 isnt 0+$ref, 0+$cloned, 'different refaddrs';
