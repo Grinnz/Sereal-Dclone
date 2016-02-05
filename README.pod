@@ -1,21 +1,4 @@
-package Sereal::Dclone;
-
-use strict;
-use warnings;
-use Exporter 'import';
-use Sereal::Decoder 'sereal_decode_with_object';
-use Sereal::Encoder 'sereal_encode_with_object';
-
-our $VERSION = '0.001';
-
-our @EXPORT_OK = 'dclone';
-
-my $decoder = Sereal::Decoder->new;
-my $encoder = Sereal::Encoder->new({freeze_callbacks => 1, no_shared_hashkeys => 1});
-
-sub dclone { sereal_decode_with_object $decoder, sereal_encode_with_object $encoder, shift }
-
-1;
+=pod
 
 =head1 NAME
 
@@ -71,3 +54,5 @@ This is free software, licensed under:
 =head1 SEE ALSO
 
 L<Storable>, L<Sereal>
+
+=cut
