@@ -47,11 +47,11 @@ is 0+$cloned, 0+$cloned->{foo}, 'recursive reference cloned';
 $ref = {foo => sub {'bar'}};
 ok !(eval { $cloned = dclone $ref; 1 }), 'exception cloning structure with coderef';
 
-{
+SKIP: {
+  skip 'Filehandles don\'t cause exceptions on 5.8', 1 if $] < 5.010000;
   open my $fh, '>', \my $dummy or die $!;
   $ref = {foo => $fh};
-  ok !(eval { $cloned = dclone $ref; 1 }), 'exception cloning structure with globref'
-    or diag ref $cloned->{foo};
+  ok !(eval { $cloned = dclone $ref; 1 }), 'exception cloning structure with globref';
 }
 
 my $obj = Sereal::Dclone::Clonetest->new;
