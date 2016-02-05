@@ -6,7 +6,7 @@ use Exporter 'import';
 use Sereal::Decoder 'sereal_decode_with_object';
 use Sereal::Encoder 'sereal_encode_with_object';
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
 
 our @EXPORT_OK = 'dclone';
 
