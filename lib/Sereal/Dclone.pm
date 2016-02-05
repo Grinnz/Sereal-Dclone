@@ -13,7 +13,7 @@ our @EXPORT_OK = 'dclone';
 my $decoder = Sereal::Decoder->new;
 my $encoder = Sereal::Encoder->new({freeze_callbacks => 1, no_shared_hashkeys => 1});
 
-sub dclone { sereal_decode_with_object $decoder, sereal_encode_with_object $encoder, shift }
+sub dclone { sereal_decode_with_object $decoder, sereal_encode_with_object($encoder, shift), my $out; $out }
 
 1;
 

@@ -38,6 +38,12 @@ cmp_ok ${$cloned->{foo}[2]}, '==', 3, 'cloned number';
 ok !defined($cloned->{bar}), 'cloned undef value';
 is_deeply ${$cloned->{ban}}, {abc => [1,2,3]}, 'cloned nested structure';
 
+$ref = {};
+$ref->{foo} = $ref;
+$cloned = dclone $ref;
+isnt 0+$ref, 0+$cloned, 'different refaddrs';
+is 0+$cloned, 0+$cloned->{foo}, 'recursive reference cloned';
+
 $ref = {foo => sub {'bar'}};
 ok !(eval { $cloned = dclone $ref; 1 }), 'exception cloning structure with coderef';
 
