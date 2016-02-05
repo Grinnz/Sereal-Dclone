@@ -51,7 +51,7 @@ ok !(eval { $cloned = dclone $ref; 1 }), 'exception cloning structure with coder
   open my $fh, '>', \my $dummy or die $!;
   $ref = {foo => $fh};
   ok !(eval { $cloned = dclone $ref; 1 }), 'exception cloning structure with globref'
-    or diag ref $cloned;
+    or diag ref $cloned->{foo};
 }
 
 my $obj = Sereal::Dclone::Clonetest->new;
