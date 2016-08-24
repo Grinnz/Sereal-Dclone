@@ -46,6 +46,9 @@ is 0+$cloned, 0+$cloned->{foo}, 'recursive reference cloned';
 
 $ref = {foo => sub {'bar'}};
 ok !(eval { $cloned = dclone $ref; 1 }), 'exception cloning structure with coderef';
+ok +(eval { $cloned = dclone $ref, {undef_unknown => 1}; 1 }),
+  'no exception cloning structure with coderef with undef_unknown option' or diag $@;
+is_deeply $cloned, {foo => undef}, 'cloned structure with undef';
 
 SKIP: {
   skip 'Filehandles don\'t cause exceptions on 5.8', 1 if $] < 5.010000;
@@ -70,6 +73,9 @@ isnt 0+$ref->{foo}, 0+$cloned->{foo}, 'different refaddrs';
 isa_ok $cloned->{foo}, 'Sereal::Dclone::Clonetest', 'cloned object';
 is $cloned->{foo}->foo, $ref->{foo}->foo, 'cloned attribute set';
 
+ok !(eval { $cloned = dclone $ref, {croak_on_bless => 1}; 1 }),
+  'exception cloning structure with croak_on_bless';
+
 $obj = Sereal::Dclone::Freezetest->new;
 $obj->foo('test string');
 $ref = {foo => $obj};
@@ -78,5 +84,10 @@ isnt 0+$ref, 0+$cloned, 'different refaddrs';
 isnt 0+$ref->{foo}, 0+$cloned->{foo}, 'different refaddrs';
 isa_ok $cloned->{foo}, 'Sereal::Dclone::Freezetest', 'cloned object';
 is $cloned->{foo}->foo, $ref->{foo}->foo . 'foo', 'cloned attribute set';
+
+ok +(eval { $cloned = dclone $ref, {freeze_callbacks => 0}; 1 }),
+  'cloned structure without freeze_callbacks' or diag $@;
+isnt 0+$ref->{foo}, 0+$cloned->{foo}, 'different refaddrs';
+is $cloned->{foo}->foo, $ref->{foo}->foo, 'attribute was not freeze/thawed';
 
 done_testing;

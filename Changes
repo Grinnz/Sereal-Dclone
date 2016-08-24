@@ -1,4 +1,5 @@
 {{$NEXT}}
+  - Allow Sereal::Encoder options to be passed to dclone()
 
 0.001     2016-02-05 03:15:43 EST
   - First release

@@ -13,7 +13,16 @@ our @EXPORT_OK = 'dclone';
 my $decoder = Sereal::Decoder->new;
 my $encoder = Sereal::Encoder->new({freeze_callbacks => 1, no_shared_hashkeys => 1});
 
-sub dclone { sereal_decode_with_object $decoder, sereal_encode_with_object $encoder, shift }
+sub dclone {
+	my ($input, $options) = @_;
+	my $enc;
+	if ($options and keys %$options) {
+		$enc = Sereal::Encoder->new({freeze_callbacks => 1, no_shared_hashkeys => 1, %$options});
+	} else {
+		$enc = $encoder;
+	}
+	return sereal_decode_with_object $decoder, sereal_encode_with_object $enc, $input;
+}
 
 1;
 
@@ -46,11 +55,18 @@ L<Sereal::Dclone> provides one function, which is exported on demand.
 =head2 dclone
 
  my $cloned = dclone $ref;
+ my $cloned = dclone $ref, {undef_unknown => 1, warn_unknown => 1};
 
 Recursively clones a referenced data structure by serializing and then
 deserializing it with L<Sereal>. Unlike L<Storable>'s dclone, the argument can
 be any serializable scalar, not just a reference. If an unsupported value is
 encountered, an exception will be thrown as it cannot be cloned.
+
+Options can be passed to the underlying L<Sereal::Encoder> object in an
+optional hash reference. To prevent exceptions when serializing unsupported
+values, the C<undef_unknown> or C<stringify_unknown> options may be useful. The
+C<croak_on_bless> or C<no_bless_objects> options can be used to control cloning
+of objects. C<freeze_callbacks> is enabled by default.
 
 =head1 BUGS
 
